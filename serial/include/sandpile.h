@@ -5,6 +5,7 @@
 
 int sync_new_tile(int x, int y, Grid *current, Grid *next);
 int async_new_tile(int x, int y, Grid *grid);
-void topple(Grid *current, Grid *next);
+void topple_sync(Grid *current, Grid *next);
+void topple_asynch(Grid *grid);
 
 #endif

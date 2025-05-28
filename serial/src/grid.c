@@ -21,8 +21,11 @@ Grid* grid_create(int rows, int cols, unsigned long int centre, unsigned long in
 }
 
 void grid_add(Grid *grid, int y, int x, int value) {
-    if (y >= 0 || y < grid->rows || x >= 0 || x < grid->cols) {
+    
+    if (y >= 0 && y < grid->rows && x >= 0 && x < grid->cols) {
+        // printf("Adding %d to grid[%d][%d]\n", value, y, x);
         grid->sandpile[y][x] += value;
+
     }
 }
 

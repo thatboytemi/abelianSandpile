@@ -22,17 +22,10 @@ int main(int argc, char *argv[]) {
     }
 
     Grid* current = grid_create(rows, cols, centre, allVal);
-    Grid* next = grid_create(rows, cols, centre, allVal);
-    topple(current, next);
-    // Free allocated memory
-    for (int i = 0; i < rows; i++) {
-        free(current->sandpile[i]);
-        free(next->sandpile[i]);
-    }
-    free(current->sandpile);
-    free(next->sandpile);
-    free(current);
-    free(next);
+    // Grid* next = grid_create(rows, cols, centre, allVal);
+    topple_asynch(current);
+
+    
     printf("Finished processing sandpile.\n");
     return 0;
 }
