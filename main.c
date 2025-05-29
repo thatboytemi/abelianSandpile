@@ -22,24 +22,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    Grid* current = grid_create(rows, cols, centre, allVal);
-    add_padding(rows, cols, current);
-    Grid* next = grid_create(rows, cols, centre, allVal);
-    add_padding(rows, cols, next);
-    topple_sync(current, next);
-
     Grid* sandpile = grid_create(rows, cols, centre, allVal);
     add_padding(rows, cols, sandpile);
     topple_asynch(sandpile);
 
-    visualize_grid_as_image(sandpile, "output_2.ppm");
-
-    bool gridEqual = check_equal(next, sandpile);
-    write_results("output.txt", rows, cols, centre, allVal, gridEqual, time_async, time_sync);
+    visualize_grid_as_image(sandpile, "output_4.ppm");
+    write_results("output.txt", rows, cols, centre, allVal, time_async);
 
     // Free allocated memory
-    grid_free(current);
-    grid_free(next);
     grid_free(sandpile);
 
     return 0;

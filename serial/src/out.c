@@ -3,12 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-
 #include "../include/grid.h"
 
 void write_results(const char *filename, int rows, int cols,
-    unsigned long int centre, unsigned long int allVal, bool gridEqual, double async_time, double sync_time) {
+    unsigned long int centre, unsigned long int allVal, double async_time) {
 
     FILE *file = fopen(filename, "a");
     if (!file) {
@@ -21,8 +19,6 @@ void write_results(const char *filename, int rows, int cols,
     fprintf(file, "Cols: %d\n", cols);
     fprintf(file, "Centre: %lu\n", centre);
     fprintf(file, "AllVal: %lu\n", allVal);
-    fprintf(file, "Grids equal: %s\n", gridEqual ? "EQUAL" : "NOT EQUAL");
-    fprintf(file, "Synchronous time: %lf seconds\n", sync_time);
     fprintf(file, "Asynchronous time: %lf seconds\n", async_time);
     fprintf(file, "----------------------------------------\n");
     
