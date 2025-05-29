@@ -9,7 +9,7 @@ SRC_DIR = serial/src
 BIN_DIR = serial/bin
 
 # Source files
-SRCS = $(SRC_DIR)/grid.c $(SRC_DIR)/sandpile.c main.c
+SRCS = $(SRC_DIR)/grid.c $(SRC_DIR)/sandpile.c $(SRC_DIR)/out.c main.c
 
 # Output executable
 TARGET = $(BIN_DIR)/main

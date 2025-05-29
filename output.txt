@@ -1,0 +1,64 @@
+Rows: 200
+Cols: 200
+Centre: 20244
+AllVal: 4
+Grids equal: NOT EQUAL
+Synchronous time: 17.106221 seconds
+Asynchronous time: 5.132732 seconds
+----------------------------------------
+Rows: 20
+Cols: 20
+Centre: 4
+AllVal: 4
+Grids equal: EQUAL
+Synchronous time: 0.000000 seconds
+Asynchronous time: 0.008864 seconds
+----------------------------------------
+Rows: 4
+Cols: 4
+Centre: 4
+AllVal: 4
+Grids equal: EQUAL
+Synchronous time: 0.000000 seconds
+Asynchronous time: 0.000842 seconds
+----------------------------------------
+Rows: 11
+Cols: 11
+Centre: 128
+AllVal: 27
+Grids equal: EQUAL
+Synchronous time: 0.006099 seconds
+Asynchronous time: 0.001658 seconds
+----------------------------------------
+Rows: 200
+Cols: 200
+Centre: 20244
+AllVal: 4
+Grids equal: NOT EQUAL
+Synchronous time: 6.050652 seconds
+Asynchronous time: 3.232621 seconds
+----------------------------------------
+Rows: 200
+Cols: 200
+Centre: 20244
+AllVal: 4
+Grids equal: EQUAL
+Synchronous time: 5.805995 seconds
+Asynchronous time: 3.016705 seconds
+----------------------------------------
+Rows: 513
+Cols: 513
+Centre: 4
+AllVal: 4
+Grids equal: EQUAL
+Synchronous time: 154.549252 seconds
+Asynchronous time: 90.047159 seconds
+----------------------------------------
+Rows: 513
+Cols: 513
+Centre: 526338
+AllVal: 0
+Grids equal: EQUAL
+Synchronous time: 229.317894 seconds
+Asynchronous time: 91.784532 seconds
+----------------------------------------

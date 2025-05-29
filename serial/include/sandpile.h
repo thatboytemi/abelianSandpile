@@ -8,4 +8,7 @@ int async_new_tile(int x, int y, Grid *grid);
 void topple_sync(Grid *current, Grid *next);
 void topple_asynch(Grid *grid);
 
+extern double time_async; // Asynchronous time
+extern double time_sync; // Synchronous time
+
 #endif

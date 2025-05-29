@@ -1,5 +1,6 @@
 #include "serial/include/grid.h"
 #include "serial/include/sandpile.h"
+#include "serial/include/out.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,10 +23,24 @@ int main(int argc, char *argv[]) {
     }
 
     Grid* current = grid_create(rows, cols, centre, allVal);
-    // Grid* next = grid_create(rows, cols, centre, allVal);
-    topple_asynch(current);
+    add_padding(rows, cols, current);
+    Grid* next = grid_create(rows, cols, centre, allVal);
+    add_padding(rows, cols, next);
+    topple_sync(current, next);
 
-    
-    printf("Finished processing sandpile.\n");
+    Grid* sandpile = grid_create(rows, cols, centre, allVal);
+    add_padding(rows, cols, sandpile);
+    topple_asynch(sandpile);
+
+    visualize_grid_as_image(sandpile, "output_2.ppm");
+
+    bool gridEqual = check_equal(next, sandpile);
+    write_results("output.txt", rows, cols, centre, allVal, gridEqual, time_async, time_sync);
+
+    // Free allocated memory
+    grid_free(current);
+    grid_free(next);
+    grid_free(sandpile);
+
     return 0;
 }

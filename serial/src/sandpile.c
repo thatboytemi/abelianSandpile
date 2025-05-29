@@ -5,16 +5,17 @@
 #include <stdbool.h>
 #include <time.h>
 
+double time_sync = 0.0;
+double time_async = 0.0;
+
 int sync_new_tile(int x, int y, Grid *current, Grid *next) {
 
     // update the current tile synchronously using tiles surrounding (x, y)
-    next->sandpile[y][x] = current->sandpile[y][x] % 4;
-
-    // Update current tile using surrounding tiles
-    if (y > 0) next->sandpile[y][x] += current->sandpile[y-1][x] / 4;
-    if (y < current->rows - 1) next->sandpile[y][x] += current->sandpile[y+1][x] / 4;
-    if (x > 0) next->sandpile[y][x] += current->sandpile[y][x-1] / 4;
-    if (x < current->cols - 1) next->sandpile[y][x] += current->sandpile[y][x+1] / 4;
+    next->sandpile[y][x] = current->sandpile[y][x] % 4
+    + current->sandpile[y-1][x] / 4
+    + current->sandpile[y+1][x] / 4
+    + current->sandpile[y][x-1] / 4
+    + current->sandpile[y][x+1] / 4;
 
     if (next->sandpile[y][x] > 3) {
         return 1; // Count so that we know when it is stable
@@ -43,41 +44,26 @@ void topple_asynch(Grid *grid) {
     int cols = grid->cols;
     int stable;
 
-    // print both grids for debugging
-    printf("T:\n");
-    grid_print(grid);
-
     clock_t start = clock();
     while (true) {
         stable = 0;
-        for (int y = 0; y < rows; y++) {
+        for (int y = 1; y <= rows; y++) {
             
-            for (int x = 0; x < cols; x++) {
+            for (int x = 1; x <= cols; x++) {
                 stable += async_new_tile(x, y, grid);   
             }
         }
-
-        printf("\nT+1:\n");
-        grid_print(grid);
-
-        printf("%d\n", stable);
+        // printf("Stable: %d\n", stable); // Debug print
         if (stable == 0) {
             break; // If no tiles unstable, we are stable
-            printf("Stable state:\n");
-            grid_print(grid);
         }
-    }
+        // Print the current grid state for debugging
+        // grid_print(grid); // Uncomment to see the grid state after each iteration
+        // printf("\n");
 
-    // Free allocated memory
-    for (int i = 0; i < rows; i++) {
-        free(grid->sandpile[i]);
     }
-    free(grid->sandpile);
-    free(grid);
-
     clock_t end = clock();
-    printf("Execution time total: %lf seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
-
+    time_async = (double)(end - start) / CLOCKS_PER_SEC;
 }
 
 void topple_sync(Grid *current, Grid *next) {
@@ -88,42 +74,25 @@ void topple_sync(Grid *current, Grid *next) {
     clock_t start = clock();
     while (true) {
         stable = 0;
-        for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < cols; x++) {
+        for (int y = 1; y <= rows; y++) {
+            for (int x = 1; x <= cols; x++) {
                 stable += sync_new_tile(x, y, current, next);   
             }
         }
-        
-        // print both grids for debugging
-        printf("T:\n");
-        grid_print(current);
-        printf("\nT+1:\n");
-        grid_print(next);
+        // printf("Stable: %d\n", stable); // Debug print
+        if (stable == 0) break; // If no tiles unstable, we are stable
 
-        printf("%d\n", stable);
-        if (stable == 0) {
-            break; // If no tiles unstable, we are stable
-            printf("Stable state:\n");
-            grid_print(next);
-        }
-        
+        // Print the current grid state for debugging
+        // printf("\n");
+        // grid_print(current); // Uncomment to see the grid state after each iteration
+        // printf("\n");
+        // grid_print(next); // Uncomment to see the next grid state after each iteration
+        // printf("\n");
         // Swap grids
         grid_swap(&current, &next);
-
     }
-
-    // Free allocated memory
-    for (int i = 0; i < rows; i++) {
-        free(current->sandpile[i]);
-        free(next->sandpile[i]);
-    }
-    free(current->sandpile);
-    free(next->sandpile);
-    free(current);
-    free(next);
-
+    
     clock_t end = clock();
-    printf("Execution time total: %lf seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
-
+    time_sync = (double)(end - start) / CLOCKS_PER_SEC;
 }
     
