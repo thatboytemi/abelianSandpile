@@ -2,30 +2,32 @@
 #include <stdlib.h>
 #include <omp.h>
 #include <math.h>
+#include <string.h>
 
-#define THRESHOLD 4  // Sandpile threshold for toppling
+
 
 int** initialize_grid(int rows, int cols, int center_value, int default_value) {
     // Add padding of 1 cell on each side
     int padded_rows = rows + 2;
     int padded_cols = cols + 2;
     
-    int** grid = (int**)malloc(padded_rows * sizeof(int*));
-    if (grid == NULL) {
-        printf("Memory allocation failed for grid rows\n");
+    // Allocate contiguous memory for better cache performance
+    int* data = (int*)calloc(padded_rows * padded_cols, sizeof(int));
+    if (data == NULL) {
+        printf("Memory allocation failed for grid data\n");
         return NULL;
     }
     
+    int** grid = (int**)malloc(padded_rows * sizeof(int*));
+    if (grid == NULL) {
+        printf("Memory allocation failed for grid rows\n");
+        free(data);
+        return NULL;
+    }
+    
+    // Set up row pointers for contiguous memory access
     for (int i = 0; i < padded_rows; i++) {
-        grid[i] = (int*)calloc(padded_cols, sizeof(int)); // calloc initializes to 0
-        if (grid[i] == NULL) {
-            printf("Memory allocation failed for grid row %d\n", i);
-            for (int j = 0; j < i; j++) {
-                free(grid[j]);
-            }
-            free(grid);
-            return NULL;
-        }
+        grid[i] = data + i * padded_cols;
     }
     
     // Initialize only the inner grid (padding remains 0)
@@ -44,10 +46,10 @@ int** initialize_grid(int rows, int cols, int center_value, int default_value) {
 }
 
 void free_grid(int** grid, int padded_rows) {
-    for (int i = 0; i < padded_rows; i++) {
-        free(grid[i]);
+    if (grid) {
+        free(grid[0]); // Free the contiguous data block
+        free(grid);    // Free the row pointers
     }
-    free(grid);
 }
 
 void print_grid(int** grid, int rows, int cols) {
@@ -60,29 +62,8 @@ void print_grid(int** grid, int rows, int cols) {
     }
 }
 
-// Check if a tile needs processing (has any cell >= threshold)
-int tile_needs_processing(int** grid, int tile_row, int tile_col, 
-                         int tile_size, int rows, int cols) {
-    int start_row = tile_row * tile_size + 1;  // +1 for padding offset
-    int end_row = start_row + tile_size;
-    if (end_row > rows + 1) end_row = rows + 1;  // Don't exceed inner grid
-    
-    int start_col = tile_col * tile_size + 1;  // +1 for padding offset
-    int end_col = start_col + tile_size;
-    if (end_col > cols + 1) end_col = cols + 1;  // Don't exceed inner grid
-    
-    for (int i = start_row; i < end_row; i++) {
-        for (int j = start_col; j < end_col; j++) {
-            if (grid[i][j] >= THRESHOLD) {
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
-
-// Process a single tile until it's stable
-void process_tile(int** grid, int tile_row, int tile_col, 
+// Optimized tile processing with reduced atomic operations
+int process_tile(int** grid, int tile_row, int tile_col, 
                   int tile_size, int rows, int cols) {
     int start_row = tile_row * tile_size + 1;  // +1 for padding offset
     int end_row = start_row + tile_size;
@@ -93,16 +74,19 @@ void process_tile(int** grid, int tile_row, int tile_col,
     if (end_col > cols + 1) end_col = cols + 1;  // Don't exceed inner grid
     
     int changed = 1;
-    int dist = 0;
+    int any_toppled = 0;
+    
     while (changed) {
         changed = 0;
         
+        // Process cells in cache-friendly order
         for (int i = start_row; i < end_row; i++) {
             for (int j = start_col; j < end_col; j++) {
-                if (grid[i][j] >= THRESHOLD) {
-                    // Topple this cell with atomic operations
-                    dist = grid[i][j] / 4;
-                    grid[i][j] %= 4;
+                if (grid[i][j] >= 4) {
+                    any_toppled = 1;
+                    
+                    int dist = grid[i][j] >> 2;  //division by 4
+                    grid[i][j] &= 3;  // modulo 4
                     
                     // Use atomic operations for boundary updates
                     #pragma omp atomic
@@ -122,82 +106,94 @@ void process_tile(int** grid, int tile_row, int tile_col,
             }
         }
     }
+    return any_toppled;
 }
 
 void parallel_sandpile(int** grid, int rows, int cols) {
     int num_threads = omp_get_max_threads();
     
-    // Calculate optimal tile size based on number of threads
-    // We want approximately 2 * num_threads tiles (since we alternate red/black)
-    int total_tiles = 2 * num_threads;
-    int tile_size = (int)sqrt((double)(rows * cols) / total_tiles);
-    if (tile_size < 1) tile_size = 1;
+    // Optimize tile size for better cache locality and load balancing
+    int target_tiles = 4 * num_threads;  // More tiles for better load balancing
+    int tile_size = (int)sqrt((double)(rows * cols) / target_tiles);
+    
+    
+    if (tile_size < 8) tile_size = 8; // set minimum tile size to prevent excessive switiching (less cache misses)
+    if (tile_size > 32) tile_size = 32;  // set maximum tile size to ensure full tile can fit in cache
     
     int tiles_rows = (rows + tile_size - 1) / tile_size;
     int tiles_cols = (cols + tile_size - 1) / tile_size;
     
-    // printf("Using %d threads with tile size %dx%d (%dx%d tiles)\n", 
-    //        num_threads, tile_size, tile_size, tiles_rows, tiles_cols);
+    printf("Using %d threads\n", num_threads);
     
     int global_changed = 1;
     int iteration = 0;
+    
+    // Pre-allocate arrays for tile indices to reduce overhead
+    int total_tiles = tiles_rows * tiles_cols;
+    int* red_tiles = (int*)malloc(total_tiles * sizeof(int));
+    int* black_tiles = (int*)malloc(total_tiles * sizeof(int));
+    int red_count = 0, black_count = 0;
+    
+    // Pre-compute red and black tile indices
+    for (int tile_idx = 0; tile_idx < total_tiles; tile_idx++) {
+        int tile_row = tile_idx / tiles_cols;
+        int tile_col = tile_idx % tiles_cols;
+        
+        if ((tile_row + tile_col) % 2 == 0) {
+            red_tiles[red_count++] = tile_idx;
+        } else {
+            black_tiles[black_count++] = tile_idx;
+        }
+    }
     
     while (global_changed) {
         global_changed = 0;
         iteration++;
         
-        // Process RED tiles (where tile_row + tile_col is even)
-        #pragma omp parallel
+        // Process RED tiles
+        #pragma omp parallel reduction(||:global_changed)
         {
             int local_changed = 0;
             
-            #pragma omp for schedule(dynamic)
-            for (int tile_idx = 0; tile_idx < tiles_rows * tiles_cols; tile_idx++) {
+            #pragma omp for schedule(dynamic) 
+            for (int i = 0; i < red_count; i++) {
+                int tile_idx = red_tiles[i];
                 int tile_row = tile_idx / tiles_cols;
                 int tile_col = tile_idx % tiles_cols;
                 
-                
-                if ((tile_row + tile_col) % 2 == 0) {
-                    if (tile_needs_processing(grid, tile_row, tile_col, tile_size, rows, cols)) {
-                        process_tile(grid, tile_row, tile_col, tile_size, rows, cols);
-                        local_changed = 1;
-                    }
+                if (process_tile(grid, tile_row, tile_col, tile_size, rows, cols)) {
+                    local_changed = 1;
                 }
             }
             
-            #pragma omp critical
-            {
-                if (local_changed) global_changed = 1;
-            }
+            if (local_changed) global_changed = 1;
         }
         
-        
-        // Process BLACK tiles (where tile_row + tile_col is odd)
-        #pragma omp parallel
+        // Process BLACK tiles
+        #pragma omp parallel reduction(||:global_changed)
         {
             int local_changed = 0;
             
-            #pragma omp for schedule(dynamic)
-            for (int tile_idx = 0; tile_idx < tiles_rows * tiles_cols; tile_idx++) {
+            #pragma omp for schedule(static) nowait
+            for (int i = 0; i < black_count; i++) {
+                int tile_idx = black_tiles[i];
                 int tile_row = tile_idx / tiles_cols;
                 int tile_col = tile_idx % tiles_cols;
                 
-                if ((tile_row + tile_col) % 2 == 1) {
-                    if (tile_needs_processing(grid, tile_row, tile_col, tile_size, rows, cols)) {
-                        process_tile(grid, tile_row, tile_col, tile_size, rows, cols);
-                        local_changed = 1;
-                    }
+                if (process_tile(grid, tile_row, tile_col, tile_size, rows, cols)) {
+                    local_changed = 1;
                 }
             }
             
-            #pragma omp critical
-            {
-                if (local_changed) global_changed = 1;
-            }
+            if (local_changed) global_changed = 1;
         }
+        
     }
     
     printf("Sandpile stabilized after %d iterations\n", iteration - 1);
+    
+    free(red_tiles);
+    free(black_tiles);
 }
 
 int main(int argc, char* argv[]) {
@@ -218,14 +214,12 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     
+    printf("Initializing %dx%d grid with %d threads...\n", rows, cols, omp_get_max_threads());
+    
     int** grid = initialize_grid(rows, cols, center_value, default_value);
     if (grid == NULL) {
         return 1;
     }
-    
-    // printf("Initial %dx%d grid:\n", rows, cols);
-    // print_grid(grid, rows, cols);
-    // printf("\n");
     
     printf("Running parallel sandpile simulation...\n");
     double start_time = omp_get_wtime();
