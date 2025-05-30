@@ -23,7 +23,6 @@ MPI_SRCS = $(SRC_DIR)/grid.c $(SRC_DIR)/sandpile.c mpiSandpile.c
 # Output executables
 TARGET = $(BIN_DIR)/main
 PARALLEL_TARGET = $(PARALLEL_BIN_DIR)/parallelAbelianSandpile
-THREAD_INFO_TARGET = $(BIN_DIR)/thread_info
 MPI_TARGET = $(MPI_BIN_DIR)/mpiSandpile
 
 # Default target
@@ -39,10 +38,7 @@ $(PARALLEL_TARGET): $(PARALLEL_SRCS)
 	@mkdir -p $(PARALLEL_BIN_DIR)
 	$(CC) $(PARALLEL_CFLAGS) $^ -o $@
 
-# Create thread info executable
-$(THREAD_INFO_TARGET): thread_info.c
-	@mkdir -p $(BIN_DIR)
-	$(CC) $(PARALLEL_CFLAGS) $^ -o $@
+
 
 # Create MPI executable
 $(MPI_TARGET): $(MPI_SRCS)
