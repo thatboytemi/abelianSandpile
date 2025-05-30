@@ -18,7 +18,7 @@ PARALLEL_SRCS = $(SRC_DIR)/grid.c $(SRC_DIR)/sandpile.c parallelAbelianSandpile.
 # Output executables
 TARGET = $(BIN_DIR)/main
 PARALLEL_TARGET = $(PARALLEL_BIN_DIR)/parallelAbelianSandpile
-THREAD_INFO_TARGET = $(BIN_DIR)/thread_info
+
 
 # Default target
 all: $(TARGET) $(PARALLEL_TARGET) $(THREAD_INFO_TARGET)
