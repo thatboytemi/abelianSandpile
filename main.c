@@ -1,6 +1,6 @@
-#include "serial/include/grid.h"
-#include "serial/include/sandpile.h"
-#include "serial/include/out.h"
+#include "sandpile/include/grid.h"
+#include "sandpile/include/sandpile.h"
+#include "sandpile/include/out.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -26,8 +26,8 @@ int main(int argc, char *argv[]) {
     add_padding(rows, cols, sandpile);
     topple_asynch(sandpile);
 
-    visualize_grid_as_image(sandpile, "output_4.ppm");
-    write_results("output.txt", rows, cols, centre, allVal, time_async);
+    visualize_grid_as_image(sandpile, "output_serial.ppm");
+    write_results("output.txt", "Serial", 1, rows, cols, centre, allVal, time_async);
 
     // Free allocated memory
     grid_free(sandpile);

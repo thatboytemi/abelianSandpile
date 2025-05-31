@@ -1,9 +1,0 @@
-#ifndef OUT_H 
-#define OUT_H
-
-#include "grid.h"
-
-void write_results(const char *filename, int rows, int cols, unsigned long int centre, unsigned long int allVal, double async_time);
-void visualize_grid_as_image(Grid *grid, const char *filename);
-
-#endif

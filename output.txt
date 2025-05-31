@@ -1,176 +1,24 @@
-Rows: 200
-Cols: 200
-Centre: 20244
-AllVal: 4
-Grids equal: NOT EQUAL
-Synchronous time: 17.106221 seconds
-Asynchronous time: 5.132732 seconds
-----------------------------------------
-Rows: 20
-Cols: 20
-Centre: 4
-AllVal: 4
-Grids equal: EQUAL
-Synchronous time: 0.000000 seconds
-Asynchronous time: 0.008864 seconds
-----------------------------------------
-Rows: 4
-Cols: 4
-Centre: 4
-AllVal: 4
-Grids equal: EQUAL
-Synchronous time: 0.000000 seconds
-Asynchronous time: 0.000842 seconds
-----------------------------------------
-Rows: 11
-Cols: 11
-Centre: 128
-AllVal: 27
-Grids equal: EQUAL
-Synchronous time: 0.006099 seconds
-Asynchronous time: 0.001658 seconds
-----------------------------------------
-Rows: 200
-Cols: 200
-Centre: 20244
-AllVal: 4
-Grids equal: NOT EQUAL
-Synchronous time: 6.050652 seconds
-Asynchronous time: 3.232621 seconds
-----------------------------------------
-Rows: 200
-Cols: 200
-Centre: 20244
-AllVal: 4
-Grids equal: EQUAL
-Synchronous time: 5.805995 seconds
-Asynchronous time: 3.016705 seconds
-----------------------------------------
+Version: Serial
+Threads: 1
 Rows: 513
 Cols: 513
 Centre: 4
 AllVal: 4
-Grids equal: EQUAL
-Synchronous time: 154.549252 seconds
-Asynchronous time: 90.047159 seconds
+Time: 60.043716 seconds
 ----------------------------------------
-Rows: 513
-Cols: 513
-Centre: 526338
-AllVal: 0
-Grids equal: EQUAL
-Synchronous time: 229.317894 seconds
-Asynchronous time: 91.784532 seconds
-----------------------------------------
-Rows: 13
-Cols: 13
-Centre: 526338
-AllVal: 0
-Grids equal: NOT EQUAL
-Synchronous time: 0.000691 seconds
-Asynchronous time: 0.001087 seconds
-----------------------------------------
-Rows: 130
-Cols: 130
-Centre: 526338
-AllVal: 423
-Grids equal: NOT EQUAL
-Synchronous time: 3.076438 seconds
-Asynchronous time: 2.502186 seconds
-----------------------------------------
-Rows: 13
-Cols: 13
-Centre: 526338
-AllVal: 0
-Grids equal: EQUAL
-Synchronous time: 0.000745 seconds
-Asynchronous time: 0.000373 seconds
-----------------------------------------
-Rows: 130
-Cols: 130
-Centre: 526338
-AllVal: 423
-Grids equal: EQUAL
-Synchronous time: 3.024575 seconds
-Asynchronous time: 2.549084 seconds
-----------------------------------------
-Rows: 513
-Cols: 513
-Centre: 526338
-AllVal: 0
-Grids equal: NOT EQUAL
-Synchronous time: 187.542062 seconds
-Asynchronous time: 80.458152 seconds
-----------------------------------------
-Rows: 4
-Cols: 4
-Centre: 72
-AllVal: 0
-Asynchronous time: 0.000002 seconds
-----------------------------------------
-Rows: 4
-Cols: 4
-Centre: 72
-AllVal: 0
-Asynchronous time: 0.000161 seconds
-----------------------------------------
-Rows: 4
-Cols: 4
-Centre: 72
-AllVal: 0
-Asynchronous time: 0.000129 seconds
-----------------------------------------
-Rows: 5
-Cols: 5
-Centre: 72
-AllVal: 0
-Asynchronous time: 0.000058 seconds
-----------------------------------------
-Rows: 5
-Cols: 5
-Centre: 72
-AllVal: 0
-Asynchronous time: 0.000049 seconds
-----------------------------------------
-Rows: 6
-Cols: 6
-Centre: 72
-AllVal: 0
-Asynchronous time: 0.000171 seconds
-----------------------------------------
-Rows: 7
-Cols: 7
-Centre: 82
-AllVal: 0
-Asynchronous time: 0.000102 seconds
-----------------------------------------
-Rows: 7
-Cols: 7
-Centre: 82
-AllVal: 0
-Asynchronous time: 0.000055 seconds
-----------------------------------------
-Rows: 513
-Cols: 513
-Centre: 526338
-AllVal: 0
-Asynchronous time: 66.233228 seconds
-----------------------------------------
-Rows: 513
-Cols: 513
-Centre: 526338
-AllVal: 0
-Asynchronous time: 68.520695 seconds
-----------------------------------------
-Rows: 613
-Cols: 613
-Centre: 5226338
-AllVal: 0
-Asynchronous time: 524.721449 seconds
-----------------------------------------
+Version: OpemMP
+Threads: 4
 Rows: 513
 Cols: 513
 Centre: 4
 AllVal: 4
-Asynchronous time: 62.505643 seconds
+Time: 48.734068 seconds
+----------------------------------------
+Version: MPI
+Threads: 4
+Rows: 513
+Cols: 513
+Centre: 4
+AllVal: 4
+Time: 30.073106 seconds
 ----------------------------------------
