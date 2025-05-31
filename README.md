@@ -1,8 +1,6 @@
 # Abelian Sandpiles
-# Make commands: make, make run, make clean
-# # Example: make run ARGS="rows cols Centre allValues"
+# Make 
+Commands: make| make run | make clean | make run_parallel
 
-Synchronous version of Abelian sandpiles in serial is working
-
-Current error for Asynch version: Segmenation fault
+Example: make run ARGS="rows cols Centre allValues"
 

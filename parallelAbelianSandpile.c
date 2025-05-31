@@ -45,8 +45,6 @@ int** initialize_grid(int rows, int cols, int center_value, int default_value) {
     return grid;
 }
 
-
-
 void free_grid(int** grid, int padded_rows) {
     if (grid) {
         free(grid[0]); // Free the contiguous data block
@@ -112,14 +110,14 @@ int process_tile(int** grid, int tile_row, int tile_col,
 }
 
 void parallel_sandpile(int** grid, int rows, int cols) {
-    // Change num threads here if needed
-    int num_threads = omp_get_max_threads() - 8;
+    int num_threads = omp_get_max_threads();
     
     // Optimize tile size for better cache locality and load balancing
     int target_tiles = 4 * num_threads;  // More tiles for better load balancing
     int tile_size = (int)sqrt((double)(rows * cols) / target_tiles);
     
-    if (tile_size < 8) tile_size = 8; // set minimum tile size to prevent excessive switching (less cache misses)
+
+    if (tile_size < 8) tile_size = 8; // set minimum tile size to prevent excessive switiching (less cache misses)
     if (tile_size > 32) tile_size = 32;  // set maximum tile size to ensure full tile can fit in cache
     
     int tiles_rows = (rows + tile_size - 1) / tile_size;
@@ -229,6 +227,7 @@ int main(int argc, char* argv[]) {
     parallel_sandpile(grid, rows, cols);
     
     double end_time = omp_get_wtime();
+
     double time = end_time - start_time;
     printf("Simulation completed in %.4f seconds\n", time);
     

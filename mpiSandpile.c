@@ -384,11 +384,10 @@ int main(int argc, char* argv[]) {
     double start_time = MPI_Wtime();
     run_sandpile_simulation(&data);
     double end_time = MPI_Wtime();
+  
     double time = end_time - start_time;
     if (data.rank == 0) {
         write_results("output.txt", "MPI", data.size, data.global_rows, data.global_cols, center_value, default_value, time);
-        printf("Simulation completed in %.4f seconds\n", end_time - start_time);
-    }
 
     print_final_grid(&data);
     free_grid(data.grid, data.local_rows);

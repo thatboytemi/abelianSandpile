@@ -8,12 +8,10 @@ CFLAGS = -Iinclude -Wall -g
 # PARALLEL_CFLAGS = $(CFLAGS) -Xpreprocessor -fopenmp -L/opt/homebrew/opt/libomp/lib -I/opt/homebrew/opt/libomp/include -lomp
 # Different flags worked for Shaylin's machine
 PARALLEL_CFLAGS = $(CFLAGS) -fopenmp
-# MPI flags
-MPI_CFLAGS = $(CFLAGS)
-
 # Directories
 SRC_DIR = sandpile/src
 BIN_DIR = sandpile/bin
+
 PARALLEL_BIN_DIR = parallel/bin
 MPI_BIN_DIR = mpi/bin
 
@@ -21,6 +19,7 @@ MPI_BIN_DIR = mpi/bin
 SRCS = $(SRC_DIR)/grid.c $(SRC_DIR)/sandpile.c $(SRC_DIR)/out.c main.c
 PARALLEL_SRCS = $(SRC_DIR)/out.c parallelAbelianSandpile.c
 MPI_SRCS = $(SRC_DIR)/out.c mpiSandpile.c
+
 
 # Output executables
 TARGET = $(BIN_DIR)/main
