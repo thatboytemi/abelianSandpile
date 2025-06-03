@@ -27,7 +27,8 @@ int main(int argc, char *argv[]) {
     topple_asynch(sandpile);
 
     visualize_grid_as_image(sandpile, "output_serial.ppm");
-    write_results("output.txt", "Serial", 1, rows, cols, centre, allVal, time_async);
+    const char *filepath = "/mnt/lustre/users/student42/HPC_A1/results.csv";
+    write_results(filepath, "Serial", 1, rows, cols, centre, allVal, time_async);
 
     // Free allocated memory
     grid_free(sandpile);

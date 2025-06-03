@@ -386,7 +386,8 @@ int main(int argc, char* argv[]) {
     double end_time = MPI_Wtime();
     double time = end_time - start_time;
     if (data.rank == 0) {
-        write_results("output.txt", "MPI", data.size, data.global_rows, data.global_cols, center_value, default_value, time);
+        const char *filepath = "/mnt/lustre/users/student42/HPC_A1/results.csv";
+        write_results(filepath, "MPI", data.size, data.global_rows, data.global_cols, center_value, default_value, time);
         printf("Simulation completed in %.4f seconds\n", end_time - start_time);
     }
 

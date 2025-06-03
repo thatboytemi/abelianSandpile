@@ -1,0 +1,21 @@
+#!/bin/bash
+#PBS -P WCHPC
+#PBS -N SERIAL
+#PBS -l select=1:ncpus=1:mpiprocs=1
+#PBS -l walltime=08:00:00
+#PBS -q serial
+#PBS -m abe
+#PBS -M shaylin.vel@gmail.com
+#PBS -r n
+#PBS -o /mnt/lustre/users/student42/HPC_A1/std_out_serial
+#PBS -e /mnt/lustre/users/student42/HPC_A1/std_error_serial
+#PBS
+
+ulimit -s unlimited cd home/student42/HPC_A1
+cd $PBS_O_WORKDIR
+
+# Run program
+# Loop through different grid sizes
+for i in $(seq 1513 100 3113); do
+    make run ARGS="$i $i 4 4"
+done

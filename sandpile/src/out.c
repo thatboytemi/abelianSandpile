@@ -15,15 +15,16 @@ void write_results(const char *filename, const char *version, int numThreads, in
         printf("Error opening file: %s\n", filename); // Debug print
         return;
     }
-    fprintf(file, "Version: %s\n", version);
-    fprintf(file, "Threads: %d\n", numThreads);
-    fprintf(file, "Rows: %d\n", rows);
-    fprintf(file, "Cols: %d\n", cols);
-    fprintf(file, "Centre: %lu\n", centre);
-    fprintf(file, "AllVal: %lu\n", allVal);
-    fprintf(file, "Time: %lf seconds\n", async_time);
-    fprintf(file, "----------------------------------------\n");
-    
+    // fprintf(file, "Version: %s\n", version);
+    // fprintf(file, "Threads: %d\n", numThreads);
+    // fprintf(file, "Rows: %d\n", rows);
+    // fprintf(file, "Cols: %d\n", cols);
+    // fprintf(file, "Centre: %lu\n", centre);
+    // fprintf(file, "AllVal: %lu\n", allVal);
+    // fprintf(file, "Time: %lf seconds\n", async_time);
+    // fprintf(file, "----------------------------------------\n");
+    // Make csv file
+    fprintf(file, "%s,%d,%d,%d,%lu,%lu,%lf\n", version, numThreads, rows, cols, centre, allVal, async_time);
     fclose(file);
     printf("Data written successfully to %s\n", filename); // Debug print
 }

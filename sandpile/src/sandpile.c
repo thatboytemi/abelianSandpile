@@ -13,8 +13,7 @@ int stable = 0;
 void async_new_tile(int x, int y, Grid *grid) {
     // Only one grid, update each surrounding block
     if (grid->sandpile[y][x] >= THRESHOLD) {
-
-    unsigned long int div4 = grid->sandpile[y][x] / 4; 
+    int div4 = grid->sandpile[y][x] >> 2;  //div operation
     // Update the surrounding tiles
     grid->sandpile[y][x - 1] += div4; // Left
     grid->sandpile[y][x + 1] += div4; // Right
@@ -22,7 +21,8 @@ void async_new_tile(int x, int y, Grid *grid) {
     grid->sandpile[y + 1][x] += div4; // Down
 
     // Remainder stays in the current tile
-    grid->sandpile[y][x] %= 4;    
+    grid->sandpile[y][x] &= 3; // mod  
+
     // Set flag to indicate at least one tile was unstable
     if (!stable) stable = 1; 
     }

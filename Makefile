@@ -59,7 +59,7 @@ run_thread_info: $(THREAD_INFO_TARGET)
 
 # Run MPI version with ARGS="rows cols centre allValues"
 run_mpi: $(MPI_TARGET)
-	mpirun -np 4 ./$(MPI_TARGET) $(ARGS)
+	mpirun -np $nproc ./$(MPI_TARGET) $(ARGS)
 
 # Clean up build files
 clean:
